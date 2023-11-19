@@ -1,40 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+// import { Repository } from 'typeorm';
 import { Todo } from '../entities/todo.entity';
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 
 @Injectable()
-export class TodoService {
-  constructor(
-    @InjectRepository(Todo)
-    private todoRepository: Repository<Todo>,
-  ) {};
-
-  findAll(): Promise<Todo[]> {
-    return this.todoRepository.find();
+export class TodoService extends TypeOrmCrudService<Todo>{
+  constructor(@InjectRepository(Todo) todoRepository) {
+    super(todoRepository);
   };
 
-  findOne(id: number): Promise<Todo | null> {
-    return this.todoRepository.findOneBy({ id });
-  };
-
-  create(todo: Todo): Promise<Todo> {
-    delete todo.id;
-    return this.todoRepository.save(todo);
-  };
-
-  // async update(todo: Todo): Promise<Todo> {
-  //   const loadedTodo = await this.todoRepository.findOneById(todo.id);
-  //   loadedTodo.title = todo.title;
-  //   loadedTodo.isCompleted = todo.isCompleted;
-  //   return this.todoRepository.save(loadedTodo);
+  // findAll(): Promise<Todo[]> {
+  //   return this.todoRepository.find();
   // };
 
-  update(todo: Todo): Promise<Todo> {       
-    return this.todoRepository.save(todo);
-  };
+  // findOne(id: number): Promise<Todo | null> {
+  //   return this.todoRepository.findOneBy({ id });
+  // };
 
-  async remove(id: number): Promise<void> {
-    await this.todoRepository.delete(id);
-  };
+  // create(todo: Todo): Promise<Todo> {
+  //   delete todo.id;
+  //   return this.todoRepository.save(todo);
+  // };
+
+  // update(todo: Todo): Promise<Todo> {       
+  //   return this.todoRepository.save(todo);
+  // };
+
+  // async remove(id: number): Promise<void> {
+  //   await this.todoRepository.delete(id);
+  // };
 };
