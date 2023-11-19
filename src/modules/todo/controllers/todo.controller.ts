@@ -20,10 +20,9 @@ export class TodoController {
 
   @Get(':id')
   async getOneAction(@Param('id') id: number): Promise<Todo> {
-    const todo = this.todoService.findOne(id);
-    if (todo === undefined) {
+    const todo = await this.todoService.findOne(id);   
+    if (todo === undefined) {     
       throw new HttpException('Todo with id = ' + id + 'not exist', HttpStatus.NOT_FOUND);
-      // throw new NotFoundException('Todo with id = ' + id + 'not exist');
     }
     return todo;
   };
@@ -59,7 +58,7 @@ export class TodoController {
     const todo = await this.todoService.findOne(id);
     if (todo === undefined) {
       throw new NotFoundException('Todo with id = ' + id + 'not exist');
-    }
+    };
     todo.title = title;
     todo.isCompleted = isCompleted;
     return this.todoService.update(todo);
@@ -67,7 +66,14 @@ export class TodoController {
 
   //Delete
   @Delete(':id')
-  deleteAction(@Param('id') id: number): Promise<void> {
-    return this.todoService.remove(id);
+  async deleteAction(@Param('id') id: number): Promise<{success: boolean}> {
+    const todo = await this.todoService.findOne(id);
+    if (todo === undefined) {
+      throw new NotFoundException('Todo with id = ' + id + 'not exist');
+    };
+    await  this.todoService.remove(id);
+    return {
+      success: true
+    }
   };
 }
